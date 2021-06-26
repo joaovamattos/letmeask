@@ -11,12 +11,15 @@ import { database } from "../../services/firebase";
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
+import { NoQuestions } from "../../components/NoQuestions";
+import { WarningModal } from "../../components/WarningModal";
 
 // import { useAuth } from "../hooks/useAuth";
 import { useRoom } from "../../hooks/useRoom";
 import { useTheme } from "../../hooks/useTheme";
 
 import { Container, Main, ToggleThemeButton } from "./styles";
+import { useState } from "react";
 
 type RoomParams = {
   id: string;
@@ -26,6 +29,11 @@ export function AdminRoom() {
   const params = useParams<RoomParams>();
   const roomId = params.id;
   const history = useHistory();
+  const [activeQuestionId, setActiveQuestionId] = useState<
+    string | undefined
+  >();
+
+  const [endRoomId, setEndRoomId] = useState<string | undefined>();
 
   const { title, questions } = useRoom(roomId);
   // const { user } = useAuth();
@@ -36,13 +44,16 @@ export function AdminRoom() {
       endedAt: new Date(),
     });
 
+    handleCloseEndRoomModal();
     history.push("/");
   }
 
-  async function handleDeleteQuestion(questionId: string) {
-    if (window.confirm("Tem certeza que você deseja excluir esta pergunta?")) {
-      await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
-    }
+  async function handleDeleteQuestion() {
+    await database
+      .ref(`rooms/${roomId}/questions/${activeQuestionId}`)
+      .remove();
+
+    handleCloseDeleteQuestionModal();
   }
 
   async function handleCheckQuestionAsAnswered(questionId: string) {
@@ -55,6 +66,14 @@ export function AdminRoom() {
     await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
       isHighlighted: true,
     });
+  }
+
+  function handleCloseDeleteQuestionModal() {
+    setActiveQuestionId(undefined);
+  }
+
+  function handleCloseEndRoomModal() {
+    setEndRoomId(undefined);
   }
 
   return (
@@ -78,7 +97,7 @@ export function AdminRoom() {
           </div>
           <div>
             <RoomCode code={roomId} />
-            <Button isOutlined onClick={handleEndRoom}>
+            <Button isOutlined onClick={() => setEndRoomId(roomId)}>
               Encerrar sala
             </Button>
           </div>
@@ -91,41 +110,74 @@ export function AdminRoom() {
           {questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
         </div>
 
-        <div className="question-list">
-          {questions.map((question) => (
-            <Question
-              key={question.id}
-              content={question.content}
-              author={question.author}
-              isAnswered={question.isAnswered}
-              isHighlighted={question.isHighlighted}
-            >
-              {!question.isAnswered && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => handleCheckQuestionAsAnswered(question.id)}
-                  >
-                    <img src={checkImg} alt="Marcar pergunta como respondida" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleHighlightQuestion(question.id)}
-                  >
-                    <img src={answerImg} alt="Dar destaque à pergunta" />
-                  </button>
-                </>
-              )}
-              <button
-                type="button"
-                onClick={() => handleDeleteQuestion(question.id)}
+        {questions.length < 1 ? (
+          <NoQuestions
+            title="Nenhuma pergunta por aqui..."
+            message="Envie o código desta sala para seus amigos e comece a responder perguntas!"
+          />
+        ) : (
+          <div className="question-list">
+            {questions.map((question) => (
+              <Question
+                key={question.id}
+                content={question.content}
+                author={question.author}
+                isAnswered={question.isAnswered}
+                isHighlighted={question.isHighlighted}
               >
-                <img src={deleteImg} alt="Remover pergunta" />
-              </button>
-            </Question>
-          ))}
-        </div>
+                {!question.isAnswered && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleCheckQuestionAsAnswered(question.id)}
+                    >
+                      <img
+                        src={checkImg}
+                        alt="Marcar pergunta como respondida"
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleHighlightQuestion(question.id)}
+                    >
+                      <img src={answerImg} alt="Dar destaque à pergunta" />
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setActiveQuestionId(question.id)}
+                >
+                  <img src={deleteImg} alt="Remover pergunta" />
+                </button>
+              </Question>
+            ))}
+          </div>
+        )}
       </Main>
+      {activeQuestionId && (
+        <WarningModal
+          icon="delete"
+          title="Excluir pergunta"
+          description="Tem certeza que você deseja excluir esta pergunta?"
+          handleAction={handleDeleteQuestion}
+          activeId={activeQuestionId}
+          handleRequestClose={handleCloseDeleteQuestionModal}
+          actionName="excluir"
+        />
+      )}
+
+      {endRoomId && (
+        <WarningModal
+          icon="danger"
+          title="Encerrar sala"
+          description="Tem certeza que você deseja encerrar esta sala?"
+          handleAction={handleEndRoom}
+          activeId={endRoomId}
+          handleRequestClose={handleCloseEndRoomModal}
+          actionName="encerrar"
+        />
+      )}
     </Container>
   );
 }

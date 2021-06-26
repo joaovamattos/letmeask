@@ -13,7 +13,7 @@ export const Container = styled.div`
 export const Aside = styled.aside`
   flex: 7;
   background: ${(props) => props.theme.colors.purple};
-  color: ${(props) => props.theme.colors.white};
+  color: #fff;
 
   display: flex;
   flex-direction: column;
@@ -56,7 +56,7 @@ export const Aside = styled.aside`
     font-size: 1.5rem;
     line-height: 2rem;
     margin-top: 1rem;
-    color: ${(props) => props.theme.colors.background};
+    color: #fff;
 
     @media (max-width: 54rem) {
       font-size: 1rem;
