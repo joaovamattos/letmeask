@@ -106,7 +106,7 @@ export const Main = styled.main`
     border-radius: 0.5rem;
     font-weight: 500;
     background: #ea4335;
-    color: ${(props) => props.theme.colors.white};
+    color: #fff;
 
     display: flex;
     align-items: center;

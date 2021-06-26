@@ -1,16 +1,19 @@
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 import logoImg from "../../assets/images/logo.svg";
+import logoDarkModeImg from "../../assets/images/logo-darkmode.svg";
 
 import { database } from "../../services/firebase";
 import { useAuth } from "../../hooks/useAuth";
 import { useRoom } from "../../hooks/useRoom";
+import { useTheme } from "../../hooks/useTheme";
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
 
-import { Container, Main, Form } from "./styles";
+import { Container, Main, Form, ToggleThemeButton } from "./styles";
 
 type RoomParams = {
   id: string;
@@ -20,6 +23,7 @@ export function Room() {
   const params = useParams<RoomParams>();
   const roomId = params.id;
 
+  const { theme, toggleTheme } = useTheme();
   const { title, questions } = useRoom(roomId);
   const { user, signInWithGoogle } = useAuth();
 
@@ -76,7 +80,22 @@ export function Room() {
     <Container>
       <header>
         <div className="content">
-          <img src={logoImg} alt="logo" />
+          <div>
+            {theme.title === "dark" ? (
+              <img height="45px" src={logoDarkModeImg} alt="Letmeask" />
+            ) : (
+              <img height="45px" src={logoImg} alt="Letmeask" />
+            )}
+
+            <ToggleThemeButton type="button" onClick={() => toggleTheme()}>
+              {theme.title === "dark" ? (
+                <FiMoon size={16} color={theme.colors.black} />
+              ) : (
+                <FiSun size={16} color={theme.colors.black} />
+              )}
+            </ToggleThemeButton>
+          </div>
+
           <RoomCode code={roomId} />
         </div>
       </header>
@@ -121,6 +140,8 @@ export function Room() {
               key={question.id}
               content={question.content}
               author={question.author}
+              isAnswered={question.isAnswered}
+              isHighlighted={question.isHighlighted}
             >
               {!question.isAnswered && (
                 <button

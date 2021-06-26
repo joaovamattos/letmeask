@@ -1,19 +1,22 @@
 import { useHistory, useParams } from "react-router-dom";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 import logoImg from "../../assets/images/logo.svg";
+import logoDarkModeImg from "../../assets/images/logo-darkmode.svg";
 import deleteImg from "../../assets/images/delete.svg";
 import checkImg from "../../assets/images/check.svg";
 import answerImg from "../../assets/images/answer.svg";
 
-// import { useAuth } from "../hooks/useAuth";
 import { database } from "../../services/firebase";
 import { Button } from "../../components/Button";
 import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
 
+// import { useAuth } from "../hooks/useAuth";
 import { useRoom } from "../../hooks/useRoom";
+import { useTheme } from "../../hooks/useTheme";
 
-import { Container, Main } from "./styles";
+import { Container, Main, ToggleThemeButton } from "./styles";
 
 type RoomParams = {
   id: string;
@@ -26,6 +29,7 @@ export function AdminRoom() {
 
   const { title, questions } = useRoom(roomId);
   // const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   async function handleEndRoom() {
     await database.ref(`rooms/${roomId}`).update({
@@ -57,7 +61,21 @@ export function AdminRoom() {
     <Container>
       <header>
         <div className="content">
-          <img src={logoImg} alt="logo" />
+          <div className="header-wrapper">
+            {theme.title === "dark" ? (
+              <img height="45px" src={logoDarkModeImg} alt="logo" />
+            ) : (
+              <img height="45px" src={logoImg} alt="logo" />
+            )}
+
+            <ToggleThemeButton type="button" onClick={() => toggleTheme()}>
+              {theme.title === "dark" ? (
+                <FiMoon size={16} color={theme.colors.black} />
+              ) : (
+                <FiSun size={16} color={theme.colors.black} />
+              )}
+            </ToggleThemeButton>
+          </div>
           <div>
             <RoomCode code={roomId} />
             <Button isOutlined onClick={handleEndRoom}>

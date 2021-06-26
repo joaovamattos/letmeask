@@ -3,7 +3,9 @@ import styled from "styled-components";
 export const Container = styled.div`
   header {
     padding: 1.5rem;
-    border-bottom: 1px solid #e2e2e2;
+    border-bottom: 1px solid
+      ${(props) =>
+        props.theme.title === "dark" ? props.theme.colors.purple : "#e0e0e0"};
 
     .content {
       max-width: 70rem;
@@ -32,6 +34,11 @@ export const Container = styled.div`
         }
       }
 
+      .header-wrapper {
+        align-items: center;
+        flex-direction: row;
+      }
+
       > img {
         max-height: 2.75rem;
       }
@@ -50,7 +57,7 @@ export const Container = styled.div`
 
 export const Main = styled.main`
   max-width: 54rem;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   padding: 0 2rem;
 
   .room-title {
@@ -150,5 +157,25 @@ export const Form = styled.form`
         cursor: pointer;
       }
     }
+  }
+`;
+
+export const ToggleThemeButton = styled.button`
+  border: 0;
+  max-height: 2rem;
+  width: 2rem;
+  background: ${(props) => props.theme.colors.highlight};
+  transition: 0.2s;
+  cursor: pointer;
+
+  border-radius: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    filter: brightness(0.9);
+    border-radius: 1rem;
   }
 `;

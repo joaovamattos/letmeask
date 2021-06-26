@@ -75,6 +75,7 @@ export const Main = styled.main`
   justify-content: center;
 
   @media (max-width: 54rem) {
+    padding-top: 2rem;
     align-items: flex-start;
   }
 
@@ -160,7 +161,7 @@ export const Form = styled.form`
   }
 
   button {
-    margin-top: 1rem;
+    margin: 1rem 0;
   }
 
   button,

@@ -14,5 +14,6 @@ export default createGlobalStyle`
 
   body, input, button, textarea {
     font: 400 1rem 'Roboto', sans-serif;
+    color: ${(props) => props.theme.colors.black};
   }
 `;

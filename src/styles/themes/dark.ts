@@ -2,17 +2,18 @@ const theme = {
   title: "dark",
 
   colors: {
-    background: "#F8F8F8",
-    foreground: "#FEFEFE",
+    background: "#121214",
+    foreground: "#201F24",
 
-    black: "#29292E",
-    white: "#F8F8F8",
+    white: "#29292E",
+    black: "#F8F8F8",
 
     danger: "#E73F5D",
-    highlight: "#F4F0FF",
+    highlight: "#33313C",
     purple: "#835AFD",
     gray: "#737380",
-    gray_light: "#DBDCDD",
+    gray_light: "#24242D",
+    gray_medium: "#555555",
     pink: "#E559F9",
   },
 };

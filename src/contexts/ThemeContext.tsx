@@ -1,7 +1,7 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 import { DefaultTheme } from "styled-components";
 
-import usePersistedState from "../hooks/usePersistedStae";
+import usePersistedState from "../hooks/usePersistedState";
 
 import light from "../styles/themes/light";
 import dark from "../styles/themes/dark";

@@ -3,9 +3,11 @@ import { useHistory } from "react-router-dom";
 
 import illustrationImg from "../../assets/images/illustration.svg";
 import logoImg from "../../assets/images/logo.svg";
+import logoDarkModeImg from "../../assets/images/logo-darkmode.svg";
 import googleIconImg from "../../assets/images/google-icon.svg";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../hooks/useTheme";
 import { database } from "../../services/firebase";
 import { Button } from "../../components/Button";
 
@@ -15,6 +17,7 @@ export function Home() {
   const [roomCode, setRoomCode] = useState("");
   const history = useHistory();
   const { user, signInWithGoogle } = useAuth();
+  const { theme } = useTheme();
 
   async function handleCreateRoom() {
     if (!user) {
@@ -58,7 +61,11 @@ export function Home() {
       </Aside>
       <Main>
         <div className="main-content">
-          <img src={logoImg} alt="Letmeask" />
+          {theme.title === "dark" ? (
+            <img src={logoDarkModeImg} alt="Letmeask" height="64px" />
+          ) : (
+            <img src={logoImg} alt="Letmeask" height="64px" />
+          )}
           <button className="create-room" onClick={handleCreateRoom}>
             <img src={googleIconImg} alt="Logo do Google" />
             Crie sua sala com o Google

@@ -2,16 +2,17 @@ const theme = {
   title: "light",
 
   colors: {
-    background: "#29292E",
+    background: "#F8F8F8",
     foreground: "#FEFEFE",
 
     black: "#29292E",
-    white: "#FFFFFF",
+    white: "#F8F8F8",
 
     danger: "#E73F5D",
     highlight: "#F4F0FF",
     purple: "#835AFD",
     gray: "#737380",
+    gray_medium: "#e2e2e2",
     gray_light: "#DBDCDD",
     pink: "#E559F9",
   },
