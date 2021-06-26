@@ -1,15 +1,15 @@
 import { useState, FormEvent } from "react";
 import { useHistory } from "react-router-dom";
 
-import illustrationImg from "../assets/images/illustration.svg";
-import logoImg from "../assets/images/logo.svg";
-import googleIconImg from "../assets/images/google-icon.svg";
+import illustrationImg from "../../assets/images/illustration.svg";
+import logoImg from "../../assets/images/logo.svg";
+import googleIconImg from "../../assets/images/google-icon.svg";
 
-import { useAuth } from "../hooks/useAuth";
-import { database } from "../services/firebase";
-import { Button } from "../components/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { database } from "../../services/firebase";
+import { Button } from "../../components/Button";
 
-import "../styles/auth.scss";
+import { Container, Aside, Main, Form } from "./styles";
 
 export function Home() {
   const [roomCode, setRoomCode] = useState("");
@@ -47,16 +47,16 @@ export function Home() {
   }
 
   return (
-    <div id="page-auth">
-      <aside>
+    <Container>
+      <Aside>
         <img
           src={illustrationImg}
           alt="Ilustração simbolizando perguntas e repostas"
         />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
         <p>Tire as dúvidas da sua audiência em tempo real</p>
-      </aside>
-      <main>
+      </Aside>
+      <Main>
         <div className="main-content">
           <img src={logoImg} alt="Letmeask" />
           <button className="create-room" onClick={handleCreateRoom}>
@@ -64,7 +64,7 @@ export function Home() {
             Crie sua sala com o Google
           </button>
           <div className="separator">ou entre em uma sala</div>
-          <form onSubmit={handleJoinRoom}>
+          <Form onSubmit={handleJoinRoom}>
             <input
               type="text"
               placeholder="Digite o código da sala"
@@ -72,9 +72,9 @@ export function Home() {
               value={roomCode}
             />
             <Button type="submit">Entrar na sala</Button>
-          </form>
+          </Form>
         </div>
-      </main>
-    </div>
+      </Main>
+    </Container>
   );
 }

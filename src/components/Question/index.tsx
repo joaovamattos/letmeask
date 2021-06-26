@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import cx from "classnames";
 
-import "../styles/question.scss";
+import { Container } from "./styles";
 
 type QuestionProps = {
   content: string;
@@ -22,7 +22,7 @@ export function Question({
   isHighlighted = false,
 }: QuestionProps) {
   return (
-    <div
+    <Container
       className={cx(
         "question",
         { answered: isAnswered },
@@ -37,6 +37,6 @@ export function Question({
         </div>
         <div>{children}</div>
       </footer>
-    </div>
+    </Container>
   );
 }

@@ -1,16 +1,16 @@
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import logoImg from "../assets/images/logo.svg";
+import logoImg from "../../assets/images/logo.svg";
 
-import { database } from "../services/firebase";
-import { useAuth } from "../hooks/useAuth";
-import { Button } from "../components/Button";
-import { RoomCode } from "../components/RoomCode";
-import { Question } from "../components/Question";
+import { database } from "../../services/firebase";
+import { useAuth } from "../../hooks/useAuth";
+import { useRoom } from "../../hooks/useRoom";
+import { Button } from "../../components/Button";
+import { RoomCode } from "../../components/RoomCode";
+import { Question } from "../../components/Question";
 
-import "../styles/room.scss";
-import { useRoom } from "../hooks/useRoom";
+import { Container, Main, Form } from "./styles";
 
 type RoomParams = {
   id: string;
@@ -21,9 +21,15 @@ export function Room() {
   const roomId = params.id;
 
   const { title, questions } = useRoom(roomId);
-  const { user } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
 
   const [newQuestion, setNewQuestion] = useState("");
+
+  async function handleSignIn() {
+    if (!user) {
+      await signInWithGoogle();
+    }
+  }
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -67,7 +73,7 @@ export function Room() {
   }
 
   return (
-    <div id="page-room">
+    <Container>
       <header>
         <div className="content">
           <img src={logoImg} alt="logo" />
@@ -75,13 +81,13 @@ export function Room() {
         </div>
       </header>
 
-      <main>
+      <Main>
         <div className="room-title">
           <h1>Sala {title}</h1>
           {questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
         </div>
 
-        <form onSubmit={handleSendQuestion}>
+        <Form onSubmit={handleSendQuestion}>
           <textarea
             placeholder="O que você quer perguntar?"
             onChange={(e) => setNewQuestion(e.target.value)}
@@ -96,14 +102,18 @@ export function Room() {
               </div>
             ) : (
               <span>
-                Para enviar uma pergunta, <button>faça seu login</button>.
+                Para enviar uma pergunta,{" "}
+                <button type="button" onClick={handleSignIn}>
+                  faça seu login
+                </button>
+                .
               </span>
             )}
             <Button type="submit" disabled={!user}>
               Enviar pergunta
             </Button>
           </div>
-        </form>
+        </Form>
 
         <div className="question-list">
           {questions.map((question) => (
@@ -142,7 +152,7 @@ export function Room() {
             </Question>
           ))}
         </div>
-      </main>
-    </div>
+      </Main>
+    </Container>
   );
 }
