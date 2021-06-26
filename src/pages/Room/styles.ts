@@ -149,7 +149,7 @@ export const Form = styled.form`
   }
 `;
 
-export const ToggleThemeButton = styled.button`
+export const ActionButton = styled.button`
   border: 0;
   max-height: 2rem;
   width: 2rem;

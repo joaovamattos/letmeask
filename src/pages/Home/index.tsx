@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { useHistory } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 import illustrationImg from "../../assets/images/illustration.svg";
 import logoImg from "../../assets/images/logo.svg";
@@ -37,12 +38,12 @@ export function Home() {
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
     if (!roomRef.exists()) {
-      alert("Room does not exists");
+      toast.error("Está sala não existe!");
       return;
     }
 
     if (roomRef.val().endedAt) {
-      alert("Room alredy cloded");
+      toast.error("Está sala já está fechada!");
       return;
     }
 
@@ -51,6 +52,8 @@ export function Home() {
 
   return (
     <Container>
+      <Toaster position="top-right" reverseOrder={false} />
+
       <Aside>
         <img
           src={illustrationImg}

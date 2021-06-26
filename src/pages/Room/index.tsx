@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FiSun, FiMoon } from "react-icons/fi";
+import { FiSun, FiMoon, FiLogOut } from "react-icons/fi";
 
 import logoImg from "../../assets/images/logo.svg";
 import logoDarkModeImg from "../../assets/images/logo-darkmode.svg";
@@ -15,7 +15,7 @@ import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
 import { NoQuestions } from "../../components/NoQuestions";
 
-import { Container, Main, Form, ToggleThemeButton } from "./styles";
+import { Container, Main, Form, ActionButton } from "./styles";
 
 type RoomParams = {
   id: string;
@@ -27,7 +27,7 @@ export function Room() {
 
   const { theme, toggleTheme } = useTheme();
   const { title, questions } = useRoom(roomId);
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle, signOut } = useAuth();
 
   const [newQuestion, setNewQuestion] = useState("");
 
@@ -89,13 +89,19 @@ export function Room() {
               <img height="45px" src={logoImg} alt="Letmeask" />
             )}
 
-            <ToggleThemeButton type="button" onClick={() => toggleTheme()}>
+            <ActionButton type="button" onClick={() => toggleTheme()}>
               {theme.title === "dark" ? (
                 <FiMoon size={16} color={theme.colors.black} />
               ) : (
                 <FiSun size={16} color={theme.colors.black} />
               )}
-            </ToggleThemeButton>
+            </ActionButton>
+
+            {user && (
+              <ActionButton type="button" onClick={() => signOut()}>
+                <FiLogOut size={16} color={theme.colors.black} />
+              </ActionButton>
+            )}
           </div>
 
           <RoomCode code={roomId} />

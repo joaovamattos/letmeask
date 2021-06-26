@@ -1,5 +1,6 @@
 import { useHistory, useParams } from "react-router-dom";
-import { FiSun, FiMoon } from "react-icons/fi";
+import { FiSun, FiMoon, FiLogOut } from "react-icons/fi";
+import toast, { Toaster } from "react-hot-toast";
 
 import logoImg from "../../assets/images/logo.svg";
 import logoDarkModeImg from "../../assets/images/logo-darkmode.svg";
@@ -13,13 +14,15 @@ import { RoomCode } from "../../components/RoomCode";
 import { Question } from "../../components/Question";
 import { NoQuestions } from "../../components/NoQuestions";
 import { WarningModal } from "../../components/WarningModal";
+import { Loading } from "../../components/Loading";
 
-// import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import { useRoom } from "../../hooks/useRoom";
 import { useTheme } from "../../hooks/useTheme";
 
-import { Container, Main, ToggleThemeButton } from "./styles";
+import { Container, Main, ActionButton } from "./styles";
 import { useState } from "react";
+import { useEffect } from "react";
 
 type RoomParams = {
   id: string;
@@ -35,9 +38,21 @@ export function AdminRoom() {
 
   const [endRoomId, setEndRoomId] = useState<string | undefined>();
 
-  const { title, questions } = useRoom(roomId);
-  // const { user } = useAuth();
+  const { title, questions, authorId, loading } = useRoom(roomId);
+  const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    if (
+      (loading === false && !user) ||
+      (loading === false && user && user.id !== authorId)
+    ) {
+      toast.error(
+        "Você precisa estar logado e ser o administrador desta sala!"
+      );
+      history.push("/");
+    }
+  }, [user, history, authorId, loading]);
 
   async function handleEndRoom() {
     await database.ref(`rooms/${roomId}`).update({
@@ -76,8 +91,14 @@ export function AdminRoom() {
     setEndRoomId(undefined);
   }
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <Container>
+      <Toaster position="top-right" reverseOrder={false} />
+
       <header>
         <div className="content">
           <div className="header-wrapper">
@@ -87,13 +108,17 @@ export function AdminRoom() {
               <img height="45px" src={logoImg} alt="logo" />
             )}
 
-            <ToggleThemeButton type="button" onClick={() => toggleTheme()}>
+            <ActionButton type="button" onClick={() => toggleTheme()}>
               {theme.title === "dark" ? (
                 <FiMoon size={16} color={theme.colors.black} />
               ) : (
                 <FiSun size={16} color={theme.colors.black} />
               )}
-            </ToggleThemeButton>
+            </ActionButton>
+
+            <ActionButton type="button" onClick={() => signOut()}>
+              <FiLogOut size={16} color={theme.colors.black} />
+            </ActionButton>
           </div>
           <div>
             <RoomCode code={roomId} />
@@ -117,7 +142,7 @@ export function AdminRoom() {
           />
         ) : (
           <div className="question-list">
-            {questions.map((question) => (
+            {questions?.map((question) => (
               <Question
                 key={question.id}
                 content={question.content}
