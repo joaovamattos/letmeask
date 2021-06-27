@@ -14,12 +14,14 @@ export function RoomCode({ code }: RoomCodeProps) {
   }
 
   return (
-    <Container className="room-code" onClick={copyRoomCodeToClipboard}>
+    <>
       <Toaster position="top-right" reverseOrder={false} />
-      <div>
-        <img src={copyImg} alt="Copy room code" />
-      </div>
-      <span>Sala #{code}</span>
-    </Container>
+      <Container className="room-code" onClick={copyRoomCodeToClipboard}>
+        <div>
+          <img src={copyImg} alt="Copy room code" />
+        </div>
+        <span>Sala #{code}</span>
+      </Container>
+    </>
   );
 }
